@@ -18,19 +18,19 @@ export const PortfolioAndVideoSection: React.FC = () => {
       : portfolioWorks.filter((p) => p.category === activeCategory);
 
   return (
-    <div id="work" className="py-24 bg-gradient-to-b from-[#FCFAF7] via-[#FFFDF9] to-[#F8F4EC] relative">
+    <div id="work" className="py-24 sm:py-32 bg-gradient-to-b from-[#FCFAF7] via-[#FFFDF9] to-[#F8F4EC] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#D4AF37]/40 shadow-xs mb-3">
-            <FolderGit2 className="w-3.5 h-3.5 text-[#B8860B]" />
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#D4AF37]/40 shadow-xs mb-4">
+            <FolderGit2 className="w-4 h-4 text-[#B8860B]" />
             <span className="text-xs font-extrabold uppercase tracking-widest text-[#8A5A00]">
               {lang === 'bn' ? 'আমাদের পোর্টফোলিও' : 'Our Work'}
             </span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-black text-[#111111] font-serif-royal">
+          <h2 className="text-3xl sm:text-5xl font-black text-[#111111] font-serif-royal leading-tight sm:leading-snug">
             {lang === 'bn' ? (
               <>
                 বাস্তব সাফল্যের <span className="gold-gradient-text">প্রমাণিত গল্প</span>
@@ -43,22 +43,22 @@ export const PortfolioAndVideoSection: React.FC = () => {
             )}
           </h2>
 
-          <p className="mt-4 text-base text-[#554E44]">
+          <p className="mt-4 text-base sm:text-lg text-[#554E44] leading-relaxed">
             {lang === 'bn'
               ? 'ডাক্তারদের চেম্বার গ্রোথ, ক্লিনিক ব্র্যান্ডিং এবং কর্পোরেট মার্কেটিংয়ে আমাদের উল্লেখযোগ্য প্রজেক্ট।'
               : 'Explore a curated selection of our doctor chamber campaigns, clinical branding, and digital growth executions.'}
           </p>
 
           {/* Filter Categories */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-2.5">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   activeCategory === cat
-                    ? 'bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white shadow-sm'
-                    : 'bg-white border border-[#D4AF37]/30 text-[#444444] hover:text-[#111111] hover:bg-[#FFF9EE]'
+                    ? 'bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white shadow-md scale-105'
+                    : 'bg-white border border-[#D4AF37]/35 text-[#444444] hover:text-[#111111] hover:bg-[#FFF9EE]'
                 }`}
               >
                 {cat}
@@ -68,7 +68,7 @@ export const PortfolioAndVideoSection: React.FC = () => {
         </div>
 
         {/* Portfolio Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredProjects.map((item) => (
             <div
               key={item.id}

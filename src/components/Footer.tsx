@@ -196,6 +196,14 @@ export const Footer: React.FC<{
             <span>•</span>
             <span className="font-bengali text-[#D4AF37] font-bold">প্রচারেই প্রসার</span>
           </div>
+          <div>
+            <button
+              onClick={() => onNavigatePage('/admin')}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1F1B16] border border-[#D4AF37]/40 text-[#F5DE93] hover:bg-[#D4AF37] hover:text-[#111111] transition-all cursor-pointer text-xs font-bold"
+            >
+              <span>অ্যাডমিন পোর্টাল</span>
+            </button>
+          </div>
         </div>
 
       </div>

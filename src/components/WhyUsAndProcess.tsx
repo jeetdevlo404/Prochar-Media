@@ -45,19 +45,19 @@ export const WhyUsAndProcess: React.FC = () => {
   ];
 
   return (
-    <div id="why-us" className="py-24 bg-[#FCFAF7] relative">
+    <div id="why-us" className="py-24 sm:py-32 bg-[#FCFAF7] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Why Choose Prochar Media */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#D4AF37]/40 shadow-xs mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-[#B8860B]" />
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#D4AF37]/40 shadow-xs mb-4">
+            <Sparkles className="w-4 h-4 text-[#B8860B]" />
             <span className="text-xs font-extrabold uppercase tracking-widest text-[#8A5A00]">
               {lang === 'bn' ? 'কেন আমরা সেরা' : 'Why Prochar Media'}
             </span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-black text-[#111111] font-serif-royal">
+          <h2 className="text-3xl sm:text-5xl font-black text-[#111111] font-serif-royal leading-tight sm:leading-snug">
             {lang === 'bn' ? (
               <>
                 কেন সফল প্রতিষ্ঠানগুলো <br />
@@ -73,7 +73,7 @@ export const WhyUsAndProcess: React.FC = () => {
         </div>
 
         {/* 5 Reasons Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {reasons.map((r, idx) => (
             <div
               key={idx}

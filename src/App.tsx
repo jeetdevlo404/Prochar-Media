@@ -20,8 +20,11 @@ import { AboutUsPage, PrivacyPolicyPage, TermsOfServicePage } from './components
 function MainRouter() {
   const { lang, setLang } = useApp();
 
-  // Current active route based on window.location.pathname
+  // Current active route based on window.location.pathname or hash
   const [currentPath, setCurrentPath] = useState<string>(() => {
+    if (window.location.hash === '#admin' || window.location.search.includes('admin=true')) {
+      return '/admin';
+    }
     return window.location.pathname || '/';
   });
 
@@ -33,21 +36,34 @@ function MainRouter() {
   // Listen to popstate and route navigation
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentPath(window.location.pathname || '/');
+      if (window.location.hash === '#admin' || window.location.search.includes('admin=true')) {
+        setCurrentPath('/admin');
+      } else {
+        setCurrentPath(window.location.pathname || '/');
+      }
     };
 
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handlePopState);
+    };
   }, []);
 
   const navigateTo = (path: string) => {
+    if (path === '/admin') {
+      window.location.hash = 'admin';
+    } else if (window.location.hash === '#admin') {
+      window.location.hash = '';
+    }
     window.history.pushState(null, '', path);
     setCurrentPath(path);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 1. Direct Full-Page Admin Panel when URL is /admin
-  if (currentPath === '/admin' || currentPath === '/admin/') {
+  // 1. Direct Full-Page Admin Panel when URL is /admin or #admin
+  if (currentPath === '/admin' || currentPath === '/admin/' || window.location.hash === '#admin') {
     return (
       <AdminDashboard
         onExitAdmin={() => {

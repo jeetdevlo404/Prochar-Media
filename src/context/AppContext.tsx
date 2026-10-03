@@ -73,7 +73,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  // Site Settings
+  // Site Settings - Synchronously loaded from localStorage for sub-second render
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => {
     const saved = localStorage.getItem('prochar_settings');
     if (saved) {
@@ -81,6 +81,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return JSON.parse(saved);
       } catch (e) {}
     }
+    // Pre-cache immediately for next visit
+    try {
+      localStorage.setItem('prochar_settings', JSON.stringify(initialSiteSettings));
+    } catch (e) {}
     return initialSiteSettings;
   });
 
