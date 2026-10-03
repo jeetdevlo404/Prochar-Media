@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  h1, h2, h3, .font-serif-royal {
+    font-family: 'Playfair Display', 'Cinzel', 'Hind Siliguri', serif;
+  }
+  .font-bengali {
+    font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* Luxury Light & Gold Glossy Aesthetics */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #996515 0%, #D4AF37 35%, #F5DE93 50%, #B8860B 75%, #8B6508 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #AA771C 100%);
+}
+
+.gold-glossy-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  box-shadow: 0 10px 30px -10px rgba(184, 134, 11, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+}
+
+.gold-glossy-card:hover {
+  border-color: rgba(212, 175, 55, 0.65);
+  box-shadow: 0 20px 40px -15px rgba(212, 175, 55, 0.22), 0 2px 6px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(255, 255, 255, 1);
+}
+
+.gold-border-sheen {
+  position: relative;
+}
+
+.gold-border-sheen::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+
+.gold-border-sheen:hover::after {
+  left: 200%;
+  transition: all 0.8s ease-in-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7F4EE;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B8860B;
+}
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-25px) rotate(180deg);
+    opacity: 0.8;
+  }
+}
+
+.animate-float-particle {
+  animation: float-particle 12s infinite ease-in-out;
+}
+
+/* Language Smooth Slide Transition: 
+   Seamlessly animates text into view when switching between English and Bangla
+*/
+@keyframes langSlideTransition {
+  0% {
+    opacity: 0.15;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.lang-transition-container {
+  animation: langSlideTransition 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Button micro-interaction animations across the website */
+button, a[role="button"] {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:hover, a[role="button"]:hover {
+  transform: translateY(-1.5px);
+}
+
+button:active, a[role="button"]:active {
+  transform: translateY(0) scale(0.97);
+}

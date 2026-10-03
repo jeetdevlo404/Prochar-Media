@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Review": {
+      "title": "Review",
+      "description": "Client testimonial and doctor endorsement for Prochar Media",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "role": { "type": "string", "maxLength": 120 },
+        "organization": { "type": "string", "maxLength": 160 },
+        "textEn": { "type": "string", "maxLength": 1000 },
+        "textBn": { "type": "string", "maxLength": 1000 },
+        "rating": { "type": "number" },
+        "avatarUrl": { "type": "string", "maxLength": 500000 },
+        "isVerified": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "role", "organization", "textBn", "rating", "avatarUrl", "createdAt"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global customizable website texts, statistics, phone numbers, and images",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "phone": { "type": "string", "maxLength": 32 },
+        "whatsapp": { "type": "string", "maxLength": 32 },
+        "email": { "type": "string", "maxLength": 120 },
+        "address": { "type": "string", "maxLength": 200 },
+        "heroHeadlineEn": { "type": "string", "maxLength": 200 },
+        "heroHeadlineBn": { "type": "string", "maxLength": 200 },
+        "heroSubtitleEn": { "type": "string", "maxLength": 500 },
+        "heroSubtitleBn": { "type": "string", "maxLength": 500 },
+        "statsProjects": { "type": "string", "maxLength": 32 },
+        "statsClients": { "type": "string", "maxLength": 32 },
+        "statsServices": { "type": "string", "maxLength": 32 },
+        "statsSolutions": { "type": "string", "maxLength": 32 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "phone", "whatsapp", "email"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "Lead generation contact inquiry submitted by prospective clients",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "phone": { "type": "string", "maxLength": 32 },
+        "email": { "type": "string", "maxLength": 120 },
+        "business": { "type": "string", "maxLength": 160 },
+        "service": { "type": "string", "maxLength": 120 },
+        "message": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "maxLength": 32 },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "phone", "service", "message", "createdAt"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized administrator record for the CMS admin panel",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 120 },
+        "role": { "type": "string", "maxLength": 32 },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Testimonials and reviews displayed on the website"
+    },
+    "/site_settings/{settingsId}": {
+      "schema": "SiteSettings",
+      "description": "Customizable website texts and contact information"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": "Inquiry",
+      "description": "Lead inquiries submitted from the contact form"
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Authorized admin users for managing site content"
+    }
+  }
+}

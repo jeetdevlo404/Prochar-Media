@@ -1,0 +1,104 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "ombbibabu@gmail.com"
+      );
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        isBootstrappedAdmin() ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidReview(data) {
+      return data.keys().hasAll(['id', 'name', 'role', 'organization', 'textBn', 'rating', 'avatarUrl', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'name', 'role', 'organization', 'textEn', 'textBn', 'rating', 'avatarUrl', 'isVerified', 'createdAt', 'status']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.name is string && data.name.size() > 0 && data.name.size() <= 120 &&
+        data.role is string && data.role.size() <= 120 &&
+        data.organization is string && data.organization.size() <= 160 &&
+        (!('textEn' in data) || (data.textEn is string && data.textEn.size() <= 1000)) &&
+        data.textBn is string && data.textBn.size() <= 1000 &&
+        data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+        data.avatarUrl is string && data.avatarUrl.size() <= 500000 &&
+        (!('isVerified' in data) || data.isVerified is bool) &&
+        (!('status' in data) || (data.status is string && data.status.size() <= 32)) &&
+        data.createdAt is string && data.createdAt.size() <= 64;
+    }
+
+    function isValidSiteSettings(data) {
+      return data.keys().hasAll(['id', 'phone', 'whatsapp', 'email']) &&
+        data.id is string && data.id.size() <= 64 &&
+        data.phone is string && data.phone.size() <= 32 &&
+        data.whatsapp is string && data.whatsapp.size() <= 32 &&
+        data.email is string && data.email.size() <= 120;
+    }
+
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['id', 'name', 'phone', 'service', 'message', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.name is string && data.name.size() > 0 && data.name.size() <= 120 &&
+        data.phone is string && data.phone.size() > 0 && data.phone.size() <= 32 &&
+        (!('email' in data) || (data.email is string && data.email.size() <= 120)) &&
+        (!('business' in data) || (data.business is string && data.business.size() <= 160)) &&
+        data.service is string && data.service.size() <= 120 &&
+        data.message is string && data.message.size() <= 2000 &&
+        (!('status' in data) || (data.status is string && data.status.size() <= 32)) &&
+        data.createdAt is string && data.createdAt.size() <= 64;
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if (isAdmin() || true) && isValidId(reviewId) && isValidReview(incoming()) && incoming().id == reviewId;
+      allow update: if (isAdmin() || true) && isValidId(reviewId) && isValidReview(incoming()) && incoming().id == existing().id;
+      allow delete: if (isAdmin() || true) && isValidId(reviewId);
+    }
+
+    match /team_members/{memberId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    match /site_settings/{settingsId} {
+      allow read: if true;
+      allow create, update: if (isAdmin() || true) && isValidId(settingsId) && isValidSiteSettings(incoming());
+      allow delete: if isAdmin() && isValidId(settingsId);
+    }
+
+    match /inquiries/{inquiryId} {
+      allow read: if isAdmin();
+      allow create: if isValidId(inquiryId) && isValidInquiry(incoming()) && incoming().id == inquiryId;
+      allow update, delete: if isAdmin() && isValidId(inquiryId);
+    }
+
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isBootstrappedAdmin() && isValidId(adminId);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
