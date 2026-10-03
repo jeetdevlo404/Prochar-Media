@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { PosterCard } from './BrandVisuals';
 import {
@@ -235,73 +236,75 @@ export const HealthcareSection: React.FC = () => {
 
       </div>
 
-      {/* Crystal Clear Lightbox Modal - Dead-center in viewport, NO desktop blur */}
-      {selectedPoster && (
-        <div
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedPoster(null);
-          }}
-          className="fixed inset-0 z-[100] bg-[#0A0A0A]/85 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
-        >
-          <div className="relative bg-[#FCFAF7] rounded-2xl sm:rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-[#D4AF37] shadow-2xl m-auto animate-in zoom-in-95 duration-200">
-            {/* Modal Close Button */}
-            <button
-              onClick={() => setSelectedPoster(null)}
-              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#111111]/80 hover:bg-[#111111] text-white flex items-center justify-center transition-colors shadow-md cursor-pointer"
-              aria-label="Close modal"
-            >
-              <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-            </button>
+      {/* Crystal Clear Lightbox Modal - Attached directly to body, Dead-center in viewport */}
+      {selectedPoster &&
+        createPortal(
+          <div
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setSelectedPoster(null);
+            }}
+            className="fixed inset-0 z-[999999] bg-black/85 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+          >
+            <div className="relative bg-[#FCFAF7] rounded-2xl sm:rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto border-2 border-[#D4AF37] shadow-2xl m-auto animate-in zoom-in-95 duration-150">
+              {/* Modal Close Button */}
+              <button
+                onClick={() => setSelectedPoster(null)}
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#111111]/80 hover:bg-[#111111] text-white flex items-center justify-center transition-colors shadow-md cursor-pointer"
+                aria-label="Close modal"
+              >
+                <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              </button>
 
-            <div className="relative aspect-[16/9] bg-black">
-              <img
-                src={selectedPoster.imageUrl}
-                alt={selectedPoster.titleEn}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                <span className="bg-[#111111]/90 text-[#F5DE93] text-[10px] sm:text-xs font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-[#D4AF37]">
-                  {selectedPoster.tag}
-                </span>
+              <div className="relative aspect-[16/9] bg-black">
+                <img
+                  src={selectedPoster.imageUrl}
+                  alt={selectedPoster.titleEn}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                  <span className="bg-[#111111]/90 text-[#F5DE93] text-[10px] sm:text-xs font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-[#D4AF37]">
+                    {selectedPoster.tag}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-7">
+                <h3 className="text-lg sm:text-xl font-bold text-[#111111] font-bengali leading-snug">
+                  {selectedPoster.titleBn}
+                </h3>
+                <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-[#B8860B] mt-0.5">
+                  {selectedPoster.titleEn}
+                </p>
+
+                <p className="mt-3 text-xs sm:text-sm text-[#444444] leading-relaxed">
+                  {lang === 'bn' ? selectedPoster.descBn : selectedPoster.descEn}
+                </p>
+
+                <div className="mt-5 pt-4 border-t border-[#D4AF37]/30 flex flex-wrap items-center justify-between gap-3">
+                  <a
+                    href={`https://wa.me/88${siteSettings.whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20Prochar%20Media,%20I%20want%20to%20know%20more%20about%20${encodeURIComponent(
+                      selectedPoster.titleEn
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#25D366] text-white font-bold text-xs shadow-md hover:bg-[#20bd5a] transition-colors"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                    <span>WhatsApp Inquire</span>
+                  </a>
+
+                  <button
+                    onClick={() => setSelectedPoster(null)}
+                    className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    {lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
+                  </button>
+                </div>
               </div>
             </div>
-
-            <div className="p-4 sm:p-7">
-              <h3 className="text-lg sm:text-xl font-bold text-[#111111] font-bengali leading-snug">
-                {selectedPoster.titleBn}
-              </h3>
-              <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-[#B8860B] mt-0.5">
-                {selectedPoster.titleEn}
-              </p>
-
-              <p className="mt-3 text-xs sm:text-sm text-[#444444] leading-relaxed">
-                {lang === 'bn' ? selectedPoster.descBn : selectedPoster.descEn}
-              </p>
-
-              <div className="mt-5 pt-4 border-t border-[#D4AF37]/30 flex flex-wrap items-center justify-between gap-3">
-                <a
-                  href={`https://wa.me/88${siteSettings.whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20Prochar%20Media,%20I%20want%20to%20know%20more%20about%20${encodeURIComponent(
-                    selectedPoster.titleEn
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#25D366] text-white font-bold text-xs shadow-md hover:bg-[#20bd5a] transition-colors"
-                >
-                  <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                  <span>WhatsApp Inquire</span>
-                </a>
-
-                <button
-                  onClick={() => setSelectedPoster(null)}
-                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold transition-colors cursor-pointer"
-                >
-                  {lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </section>
   );
 };

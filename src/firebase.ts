@@ -1,10 +1,19 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
-import firebaseConfig from '../firebase-applet-config.json';
+
+// User's Official Prochar Media Firebase Project
+export const firebaseConfig = {
+  apiKey: "AIzaSyAquEa8f-5MWS6cj0Wi1zPrl05P6yBtPmU",
+  authDomain: "prochar-media.firebaseapp.com",
+  projectId: "prochar-media",
+  storageBucket: "prochar-media.firebasestorage.app",
+  messagingSenderId: "17470591611",
+  appId: "1:17470591611:web:4310080ad320d5acc388de"
+};
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
@@ -45,7 +54,7 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   return errInfo;
 }
 
-// Test connection on boot per Firebase skill guidelines
+// Test connection on boot
 async function testConnection() {
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));

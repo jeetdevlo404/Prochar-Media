@@ -45,14 +45,16 @@ export const TestimonialsSection: React.FC<{ onNavigateReviews: () => void }> = 
               : 'Authentic testimonials and verified feedback from doctors, clinics, and businesses.'}
           </p>
 
-          {/* Action button to open Review submission modal */}
-          <div className="mt-5 flex items-center justify-center gap-3">
+          {/* Action button to open Review submission modal - Highly visible & distinct */}
+          <div className="mt-6 flex items-center justify-center">
             <button
               onClick={() => setIsWriteModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#D4AF37]/60 text-xs sm:text-sm font-bold text-[#8A5A00] hover:bg-[#FFF9EE] hover:border-[#D4AF37] transition-all shadow-xs cursor-pointer group"
+              className="relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#996515] via-[#B8860B] to-[#D4AF37] text-white text-sm sm:text-base font-black shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer border-2 border-[#FFF2B2] ring-4 ring-[#D4AF37]/30"
             >
-              <MessageSquarePlus className="w-4 h-4 text-[#B8860B] group-hover:scale-110 transition-transform" />
-              <span>{lang === 'bn' ? '+ আপনার রিভিউ লিখুন' : '+ Write a Review'}</span>
+              <MessageSquarePlus className="w-5 h-5 text-[#FFF2B2] animate-bounce" />
+              <span className="font-bengali tracking-wide drop-shadow-xs">
+                {lang === 'bn' ? '✍️ আপনার রিভিউ লিখুন (এখানে ক্লিক করুন)' : '✍️ Write a Review (Click Here)'}
+              </span>
             </button>
           </div>
         </div>

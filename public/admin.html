@@ -311,24 +311,23 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Prochar Media Real Firebase Credentials
+    // Prochar Media Official Firebase Credentials
     const firebaseConfig = {
-      projectId: "gen-lang-client-0073843815",
-      appId: "1:566744402498:web:b8d7d02b0ecdbe60773bdb",
-      apiKey: "AIzaSyD5LVpSmg7XgEnn4sNvQeYLIYhU_hpKMEo",
-      authDomain: "gen-lang-client-0073843815.firebaseapp.com",
-      firestoreDatabaseId: "ai-studio-ed3a15bd-ded0-4525-87c7-5252af9ad347",
-      storageBucket: "gen-lang-client-0073843815.firebasestorage.app",
-      messagingSenderId: "566744402498"
+      apiKey: "AIzaSyAquEa8f-5MWS6cj0Wi1zPrl05P6yBtPmU",
+      authDomain: "prochar-media.firebaseapp.com",
+      projectId: "prochar-media",
+      storageBucket: "prochar-media.firebasestorage.app",
+      messagingSenderId: "17470591611",
+      appId: "1:17470591611:web:4310080ad320d5acc388de"
     };
 
     // Initialize Firebase
     let app, db;
     try {
       app = initializeApp(firebaseConfig);
-      db = getFirestore(app, "ai-studio-ed3a15bd-ded0-4525-87c7-5252af9ad347");
+      db = getFirestore(app);
     } catch (e) {
-      console.warn("Firebase Init Fallback:", e);
+      console.warn("Firebase Init Notice:", e);
       try {
         db = getFirestore(app);
       } catch (err) {}

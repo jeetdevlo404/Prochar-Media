@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { portfolioWorks } from '../data/initialData';
 import { PortfolioItem } from '../types';
@@ -16,6 +17,26 @@ export const PortfolioAndVideoSection: React.FC = () => {
     activeCategory === 'All'
       ? portfolioWorks
       : portfolioWorks.filter((p) => p.category === activeCategory);
+
+  // Lock body scroll when either modal is open
+  useEffect(() => {
+    if (selectedProject || videoModalOpen) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setSelectedProject(null);
+          setVideoModalOpen(false);
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = 'unset';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [selectedProject, videoModalOpen]);
 
   return (
     <div id="work" className="py-24 sm:py-32 bg-gradient-to-b from-[#FCFAF7] via-[#FFFDF9] to-[#F8F4EC] relative">
@@ -151,110 +172,126 @@ export const PortfolioAndVideoSection: React.FC = () => {
       </div>
 
       {/* Project Lightbox Modal */}
-      {selectedProject && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="relative bg-[#FCFAF7] rounded-3xl max-w-2xl w-full overflow-hidden border border-[#D4AF37] shadow-2xl">
-            <button
-              onClick={() => setSelectedProject(null)}
-              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+      {selectedProject &&
+        createPortal(
+          <div
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setSelectedProject(null);
+            }}
+            className="fixed inset-0 z-[999999] bg-black/85 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+          >
+            <div className="relative bg-[#FCFAF7] rounded-2xl sm:rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto border-2 border-[#D4AF37] shadow-2xl m-auto animate-in zoom-in-95 duration-150">
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-3.5 right-3.5 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            <div className="aspect-[16/10] bg-black relative">
-              <img
-                src={selectedProject.imageUrl}
-                alt={selectedProject.titleEn}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-4 left-4">
-                <span className="bg-[#111111] text-[#F5DE93] text-xs font-bold px-3 py-1 rounded-full border border-[#D4AF37]">
-                  {selectedProject.category}
-                </span>
+              <div className="aspect-[16/10] bg-black relative">
+                <img
+                  src={selectedProject.imageUrl}
+                  alt={selectedProject.titleEn}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3.5 left-3.5">
+                  <span className="bg-[#111111] text-[#F5DE93] text-xs font-bold px-3 py-1 rounded-full border border-[#D4AF37]">
+                    {selectedProject.category}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-5 sm:p-7">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#111111] font-bengali">
+                  {lang === 'bn' ? selectedProject.titleBn : selectedProject.titleEn}
+                </h3>
+                <p className="text-xs font-semibold text-[#8A5A00] mt-1">
+                  Client: {selectedProject.client || 'Prochar Media Strategic Partner'}
+                </p>
+
+                <p className="mt-3.5 text-xs sm:text-sm text-[#554E44] leading-relaxed">
+                  {lang === 'bn' ? selectedProject.descBn : selectedProject.descEn}
+                </p>
+
+                <div className="mt-5 pt-4 border-t border-[#D4AF37]/30 flex flex-wrap items-center justify-between gap-3">
+                  <a
+                    href={`https://wa.me/88${siteSettings.whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20Prochar%20Media,%20I%20am%20interested%20in%20a%20similar%20project%20like%20${encodeURIComponent(
+                      selectedProject.titleEn
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white text-xs font-bold shadow-md hover:scale-105 transition-all"
+                  >
+                    <span>{lang === 'bn' ? 'অনুরূপ প্রজেক্ট নিয়ে কথা বলুন' : 'Inquire for Similar Project'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+
+                  <button
+                    onClick={() => setSelectedProject(null)}
+                    className="px-4 py-2 rounded-full bg-gray-200 text-gray-800 text-xs font-bold hover:bg-gray-300 cursor-pointer"
+                  >
+                    {lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
+                  </button>
+                </div>
               </div>
             </div>
+          </div>,
+          document.body
+        )}
 
-            <div className="p-6 md:p-8">
-              <h3 className="text-2xl font-bold text-[#111111] font-bengali">
-                {lang === 'bn' ? selectedProject.titleBn : selectedProject.titleEn}
-              </h3>
-              <p className="text-xs font-semibold text-[#8A5A00] mt-1">
-                Client: {selectedProject.client || 'Prochar Media Strategic Partner'}
-              </p>
+      {/* Video Showreel Modal */}
+      {videoModalOpen &&
+        createPortal(
+          <div
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setVideoModalOpen(false);
+            }}
+            className="fixed inset-0 z-[999999] bg-black/90 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+          >
+            <div className="relative bg-[#111111] rounded-2xl sm:rounded-3xl max-w-2xl w-full border-2 border-[#D4AF37] shadow-2xl p-5 sm:p-7 text-white text-center m-auto animate-in zoom-in-95 duration-150">
+              <button
+                onClick={() => setVideoModalOpen(false)}
+                className="absolute top-3.5 right-3.5 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-              <p className="mt-4 text-sm text-[#554E44] leading-relaxed">
-                {lang === 'bn' ? selectedProject.descBn : selectedProject.descEn}
-              </p>
+              <div className="aspect-[16/9] rounded-2xl bg-black flex flex-col items-center justify-center p-6 sm:p-8 border border-[#D4AF37]/30 relative overflow-hidden">
+                <div className="w-14 h-14 rounded-full bg-[#D4AF37]/20 border-2 border-[#D4AF37] flex items-center justify-center mb-3 animate-pulse">
+                  <Play className="w-7 h-7 text-[#F5DE93] fill-current ml-0.5" />
+                </div>
+                <h4 className="text-lg sm:text-xl font-bold font-bengali">
+                  {lang === 'bn' ? 'প্রচার মিডিয়া অফিসিয়াল শো-রিল' : 'Prochar Media Official Showreel'}
+                </h4>
+                <p className="text-xs text-gray-300 mt-1.5 max-w-md">
+                  {lang === 'bn'
+                    ? 'ডক্টর ব্র্যান্ডিং, হেলথকেয়ার রিলস ও কর্পোরেট ভিডিও প্রোডাকশনের এক্সক্লুসিভ কালেকশন।'
+                    : 'A montage of our short-form reels, doctor tips, and hospital campaign visual stories.'}
+                </p>
+              </div>
 
-              <div className="mt-6 pt-5 border-t border-[#D4AF37]/30 flex items-center justify-between">
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
                 <a
-                  href={`https://wa.me/88${siteSettings.whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20Prochar%20Media,%20I%20am%20interested%20in%20a%20similar%20project%20like%20${encodeURIComponent(
-                    selectedProject.titleEn
-                  )}`}
+                  href={`https://wa.me/88${siteSettings.whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20Prochar%20Media,%20I%20want%20video%20production%20services.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-white text-xs font-bold shadow-md hover:scale-105 transition-all"
+                  className="px-6 py-2.5 rounded-full bg-[#25D366] text-white text-xs font-bold shadow-md hover:bg-[#20bd5a]"
                 >
-                  <span>{lang === 'bn' ? 'অনুরূপ প্রজেক্ট নিয়ে কথা বলুন' : 'Inquire for Similar Project'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  হোয়াটসঅ্যাপে ভিডিও স্যাম্পল চান
                 </a>
-
                 <button
-                  onClick={() => setSelectedProject(null)}
-                  className="px-4 py-2 rounded-full bg-gray-200 text-gray-800 text-xs font-bold hover:bg-gray-300"
+                  onClick={() => setVideoModalOpen(false)}
+                  className="px-5 py-2.5 rounded-full bg-gray-800 text-gray-300 text-xs font-bold hover:bg-gray-700 cursor-pointer"
                 >
-                  {lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
+                  বন্ধ করুন
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Video Showreel Modal */}
-      {videoModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative bg-[#111111] rounded-3xl max-w-3xl w-full overflow-hidden border border-[#D4AF37] shadow-2xl p-6 text-white text-center">
-            <button
-              onClick={() => setVideoModalOpen(false)}
-              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="aspect-[16/9] rounded-2xl bg-black flex flex-col items-center justify-center p-8 border border-[#D4AF37]/30 relative overflow-hidden">
-              <div className="w-16 h-16 rounded-full bg-[#D4AF37]/20 border-2 border-[#D4AF37] flex items-center justify-center mb-4 animate-pulse">
-                <Play className="w-8 h-8 text-[#F5DE93] fill-current ml-1" />
-              </div>
-              <h4 className="text-xl font-bold font-bengali">
-                {lang === 'bn' ? 'প্রচার মিডিয়া অফিসিয়াল শো-রিল' : 'Prochar Media Official Showreel'}
-              </h4>
-              <p className="text-xs text-gray-400 mt-1 max-w-md">
-                {lang === 'bn'
-                  ? 'ডক্টর ব্র্যান্ডিং, হেলথকেয়ার রিলস ও কর্পোরেট ভিডিও প্রোডাকশনের এক্সক্লুসিভ কালেকশন।'
-                  : 'A montage of our short-form reels, doctor tips, and hospital campaign visual stories.'}
-              </p>
-            </div>
-
-            <div className="mt-4 flex items-center justify-center gap-3">
-              <a
-                href={`https://wa.me/88${siteSettings.whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20Prochar%20Media,%20I%20want%20video%20production%20services.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-2.5 rounded-full bg-[#25D366] text-white text-xs font-bold shadow-md hover:bg-[#20bd5a]"
-              >
-                হোয়াটসঅ্যাপে ভিডিও স্যাম্পল চান
-              </a>
-              <button
-                onClick={() => setVideoModalOpen(false)}
-                className="px-6 py-2.5 rounded-full bg-gray-800 text-gray-300 text-xs font-bold hover:bg-gray-700"
-              >
-                বন্ধ করুন
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 };
