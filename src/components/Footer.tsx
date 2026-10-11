@@ -93,39 +93,37 @@ export const Footer: React.FC<{
           {/* Quick Links & Separate Info Pages (Cols 6-8) */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-xs uppercase tracking-widest font-extrabold text-[#D4AF37]">
-              {lang === 'bn' ? 'গুরুত্বপূর্ণ পেইজসমূহ' : 'Important Pages'}
+              {lang === 'bn' ? 'প্রতিষ্ঠান ও নীতিমালা' : 'Company & Legal'}
             </h4>
             <ul className="space-y-2.5 text-xs text-gray-300">
               <li>
                 <button
                   onClick={() => onNavigatePage('/about-us')}
-                  className="hover:text-[#F5DE93] transition-colors text-left"
+                  className="hover:text-[#F5DE93] transition-colors text-left cursor-pointer"
                 >
                   {lang === 'bn' ? 'আমাদের সম্পর্কে (About Us)' : 'About Prochar Media'}
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigatePage('/reviews')}
-                  className="hover:text-[#F5DE93] transition-colors text-left"
+                  onClick={() => onNavigatePage('/contact-us')}
+                  className="hover:text-[#F5DE93] transition-colors text-left cursor-pointer"
                 >
-                  {lang === 'bn' ? 'সকল ক্লায়েন্ট রিভিউ (All Reviews)' : 'Client Reviews (/reviews)'}
+                  {lang === 'bn' ? 'যোগাযোগ করুন (Contact Us)' : 'Contact Us'}
                 </button>
               </li>
               <li>
-                <a href="#services" className="hover:text-[#F5DE93] transition-colors">
-                  {lang === 'bn' ? 'সেবাসমূহ (Services)' : 'Our Services'}
-                </a>
-              </li>
-              <li>
-                <a href="#team" className="hover:text-[#F5DE93] transition-colors">
-                  {lang === 'bn' ? 'টিম মেম্বার (Team Members)' : 'Our Team Members'}
-                </a>
+                <button
+                  onClick={() => onNavigatePage('/reviews')}
+                  className="hover:text-[#F5DE93] transition-colors text-left cursor-pointer"
+                >
+                  {lang === 'bn' ? 'সকল ক্লায়েন্ট রিভিউ (All Reviews)' : 'Verified Client Reviews'}
+                </button>
               </li>
               <li>
                 <button
                   onClick={() => onNavigatePage('/privacy-policy')}
-                  className="hover:text-[#F5DE93] transition-colors text-left"
+                  className="hover:text-[#F5DE93] transition-colors text-left cursor-pointer"
                 >
                   {lang === 'bn' ? 'গোপনীয়তা নীতি (Privacy Policy)' : 'Privacy Policy'}
                 </button>
@@ -133,9 +131,17 @@ export const Footer: React.FC<{
               <li>
                 <button
                   onClick={() => onNavigatePage('/terms-of-service')}
-                  className="hover:text-[#F5DE93] transition-colors text-left"
+                  className="hover:text-[#F5DE93] transition-colors text-left cursor-pointer"
                 >
-                  {lang === 'bn' ? 'শর্তাবলী (Terms of Service)' : 'Terms of Service'}
+                  {lang === 'bn' ? 'সেবার শর্তাবলী (Terms of Service)' : 'Terms of Service'}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigatePage('/disclaimer')}
+                  className="hover:text-[#F5DE93] transition-colors text-left cursor-pointer"
+                >
+                  {lang === 'bn' ? 'মেডিকেল এথিকস ও ডিসক্লেইমার' : 'Medical Ethics & Disclaimer'}
                 </button>
               </li>
             </ul>
@@ -186,23 +192,34 @@ export const Footer: React.FC<{
 
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+        {/* Bottom Bar - Professional Legal Links & Copyright (Zero Admin Links) */}
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
           <div>
             © {new Date().getFullYear()} PROCHAR MEDIA. All Rights Reserved.
           </div>
-          <div className="flex items-center gap-3 text-xs">
+
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
+            <button onClick={() => onNavigatePage('/about-us')} className="hover:text-[#F5DE93] transition-colors cursor-pointer">
+              {lang === 'bn' ? 'আমাদের সম্পর্কে' : 'About Us'}
+            </button>
+            <span className="text-gray-600">•</span>
+            <button onClick={() => onNavigatePage('/contact-us')} className="hover:text-[#F5DE93] transition-colors cursor-pointer">
+              {lang === 'bn' ? 'যোগাযোগ' : 'Contact Us'}
+            </button>
+            <span className="text-gray-600">•</span>
+            <button onClick={() => onNavigatePage('/privacy-policy')} className="hover:text-[#F5DE93] transition-colors cursor-pointer">
+              {lang === 'bn' ? 'প্রাইভেসি পলিসি' : 'Privacy Policy'}
+            </button>
+            <span className="text-gray-600">•</span>
+            <button onClick={() => onNavigatePage('/terms-of-service')} className="hover:text-[#F5DE93] transition-colors cursor-pointer">
+              {lang === 'bn' ? 'শর্তাবলী' : 'Terms of Service'}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs">
             <span className="text-[#D4AF37] font-serif-royal">We Promote, You Grow</span>
             <span>•</span>
             <span className="font-bengali text-[#D4AF37] font-bold">প্রচারেই প্রসার</span>
-          </div>
-          <div>
-            <button
-              onClick={() => onNavigatePage('/admin')}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1F1B16] border border-[#D4AF37]/40 text-[#F5DE93] hover:bg-[#D4AF37] hover:text-[#111111] transition-all cursor-pointer text-xs font-bold"
-            >
-              <span>অ্যাডমিন পোর্টাল</span>
-            </button>
           </div>
         </div>
 
