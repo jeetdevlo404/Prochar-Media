@@ -27,7 +27,10 @@ export const initialSiteSettings: SiteSettings = {
   updatedAt: new Date().toISOString()
 };
 
-// No default reviews as requested: "রিভিউগুলো সরিয়ে দাও। কোনো রিভিউ থাকবে না, আমি এডমিন প্যানেল থেকে এড করবো ওইগুলো"
+import { initialTeamMembers } from './teamData';
+export { initialTeamMembers };
+
+// No default reviews as requested: all reviews come directly from database
 export const initialReviews: Review[] = [];
 
 export const allServices: ServiceItem[] = [

@@ -88,32 +88,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return initialSiteSettings;
   });
 
-  // Reviews State - Starts empty as requested ("রিভিউগুলো সরিয়ে দাও। কোনো রিভিউ থাকবে না")
-  const [reviews, setReviews] = useState<Review[]>(() => {
-    const saved = localStorage.getItem('prochar_reviews');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      } catch (e) {}
-    }
-    return initialReviews;
-  });
+  // Reviews State - Starts completely empty
+  const [reviews, setReviews] = useState<Review[]>([]);
 
-  // Team Members State - Admin will add from Admin Panel
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() => {
-    const saved = localStorage.getItem('prochar_team_members');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      } catch (e) {}
-    }
-    return [];
-  });
+  // Team Members State - Starts completely empty
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   // Sync with Firestore Real-time listeners
   useEffect(() => {
+    // Clear any stale demo data from previous sessions
+    try {
+      localStorage.removeItem('prochar_team_members');
+      localStorage.removeItem('prochar_reviews');
+    } catch (e) {}
+
     const settingsDoc = doc(db, 'site_settings', 'main');
     const unsubSettings = onSnapshot(
       settingsDoc,
@@ -130,6 +118,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       },
       (error) => {
         handleFirestoreError(error, OperationType.GET, 'site_settings/main');
+        const saved = localStorage.getItem('prochar_settings');
+        if (saved) {
+          try {
+            setSiteSettings(JSON.parse(saved));
+          } catch (e) {}
+        }
       }
     );
 
@@ -149,10 +143,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           });
           items.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
           setReviews(items);
-          localStorage.setItem('prochar_reviews', JSON.stringify(items));
         } else {
           setReviews([]);
-          localStorage.setItem('prochar_reviews', JSON.stringify([]));
         }
       },
       (error) => {
@@ -172,15 +164,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           });
           items.sort((a, b) => (a.order || 0) - (b.order || 0));
           setTeamMembers(items);
-          localStorage.setItem('prochar_team_members', JSON.stringify(items));
         } else {
-          // If empty in firestore, check local storage
-          const saved = localStorage.getItem('prochar_team_members');
-          if (saved) {
-            try {
-              setTeamMembers(JSON.parse(saved));
-            } catch (e) {}
-          }
+          setTeamMembers([]);
         }
       },
       (error) => {
@@ -219,7 +204,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newReview: Review = {
       ...reviewData,
       id: newId,
-      status: 'pending',
+      status: 'approved',
       createdAt: new Date().toISOString(),
     };
 

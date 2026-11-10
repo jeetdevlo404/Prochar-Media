@@ -1,15 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 
-// User's Official Prochar Media Firebase Project
+// User's New Official Firebase Project: prochar-media-e8676
 export const firebaseConfig = {
-  apiKey: "AIzaSyAquEa8f-5MWS6cj0Wi1zPrl05P6yBtPmU",
-  authDomain: "prochar-media.firebaseapp.com",
-  projectId: "prochar-media",
-  storageBucket: "prochar-media.firebasestorage.app",
-  messagingSenderId: "17470591611",
-  appId: "1:17470591611:web:4310080ad320d5acc388de"
+  apiKey: "AIzaSyCsjQ1_iZ44y5P3LZwmcQ3klSUvUXT6TnE",
+  authDomain: "prochar-media-e8676.firebaseapp.com",
+  projectId: "prochar-media-e8676",
+  storageBucket: "prochar-media-e8676.firebasestorage.app",
+  messagingSenderId: "425962575212",
+  appId: "1:425962575212:web:7f5f0a80f2a0fd81d20f49"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -53,17 +53,5 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   console.warn('Firestore Operation Notice: ', JSON.stringify(errInfo));
   return errInfo;
 }
-
-// Test connection on boot
-async function testConnection() {
-  try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.warn("Please check your Firebase configuration.");
-    }
-  }
-}
-testConnection();
 
 export { signInWithPopup, signOut };

@@ -49,12 +49,25 @@ export const TeamSection: React.FC = () => {
               >
                 <div className="flex flex-col items-center w-full">
                   <div className="relative mb-2.5">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 border-[#D4AF37]/70 shadow-xs bg-[#FAF4E6]">
-                      <img
-                        src={member.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'}
-                        alt={member.name}
-                        className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                      />
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 border-[#D4AF37]/70 shadow-xs bg-[#FAF4E6] flex items-center justify-center">
+                      {member.image && (member.image.startsWith('http') || member.image.startsWith('data:')) ? (
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const parent = e.currentTarget.parentElement;
+                            if (parent) {
+                              parent.innerHTML = `<span class="text-[#8A5A00] font-black text-xl font-serif-royal">${member.name ? member.name.charAt(0) : 'P'}</span>`;
+                            }
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#FAF4E6] to-[#F1E5C8] text-[#8A5A00] font-black text-xl font-serif-royal">
+                          {member.name ? member.name.charAt(0) : 'P'}
+                        </div>
+                      )}
                     </div>
                     {isLeader && (
                       <span className="absolute -bottom-1 -right-1 bg-[#111111] text-[#D4AF37] p-1 rounded-full border border-[#D4AF37] shadow-xs">
