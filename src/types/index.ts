@@ -54,6 +54,7 @@ export interface SiteSettings {
   shellPosterUrl?: string;
   memorablePosterUrl?: string;
   phonePosterUrl?: string;
+  gaMeasurementId?: string;
   updatedAt: string;
 }
 

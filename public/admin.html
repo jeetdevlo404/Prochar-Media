@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>প্রচার মিডিয়া — অ্যাডমিন কনসোল</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Hind Siliguri', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              DEFAULT: '#B8860B',
+              light: '#D4AF37',
+              dark: '#8A5A00',
+              bg: '#FFFDF9',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Firebase Compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #F4EFE6;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #D4AF37;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center text-slate-800 pb-20">
+
+  <!-- Mobile App Container -->
+  <div class="w-full max-w-lg bg-[#FAF7F2] min-h-screen shadow-2xl flex flex-col relative border-x border-[#E2D5BE]">
+
+    <!-- App Bar / Top Header -->
+    <header class="sticky top-0 z-30 bg-gradient-to-r from-[#1A1814] via-[#2A241C] to-[#1A1814] text-white px-4 py-3 shadow-md border-b border-[#D4AF37]/40 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8A5A00] flex items-center justify-center font-black text-white text-base shadow-inner border border-[#FFF0B2]">
+          প্র
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-white tracking-wide leading-tight">প্রচার মিডিয়া অ্যাডমিন</h1>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[10px] text-emerald-300 font-medium">লাইভ ডাটাবেজ: prochar-media-e8676</span>
+          </div>
+        </div>
+      </div>
+      <a href="/" target="_blank" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#FFDF73] text-[11px] font-semibold border border-[#D4AF37]/40 transition flex items-center gap-1">
+        <span>ওয়েবসাইট</span> ↗
+      </a>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white px-2.5 py-2 border-b border-[#E8DFC9] grid grid-cols-3 gap-2 shadow-xs sticky top-[57px] z-20">
+      <button onclick="switchTab('team')" id="tab-btn-team" class="py-2 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-[#8A5A00] text-white shadow-xs whitespace-nowrap">
+        <span>👥</span><span>টিম মেম্বার</span>
+      </button>
+      <button onclick="switchTab('reviews')" id="tab-btn-reviews" class="py-2 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gray-100 text-gray-600 hover:bg-gray-200 whitespace-nowrap">
+        <span>⭐</span><span>রিভিউসমূহ</span>
+      </button>
+      <button onclick="switchTab('settings')" id="tab-btn-settings" class="py-2 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gray-100 text-gray-600 hover:bg-gray-200 whitespace-nowrap">
+        <span>⚙️</span><span>সেটিংস</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-3.5 custom-scroll overflow-y-auto">
+
+      <!-- TAB 1: TEAM MEMBERS -->
+      <section id="tab-team" class="space-y-3.5">
+        <div class="flex items-center justify-between bg-white p-3 rounded-2xl border border-[#E8DFC9] shadow-xs">
+          <div>
+            <h2 class="text-sm font-bold text-gray-900 leading-tight">টিম মেম্বার তালিকা</h2>
+            <p class="text-[11px] text-gray-500">ছবি ও তথ্য এডিট করুন অথবা নতুন যোগ করুন</p>
+          </div>
+          <button onclick="openMemberModal()" class="px-3 py-1.5 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] hover:brightness-105 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1">
+            + নতুন মেম্বার
+          </button>
+        </div>
+
+        <div id="team-loading" class="text-center py-10 text-gray-500 text-xs">
+          টিম মেম্বার লোড হচ্ছে...
+        </div>
+
+        <div id="team-list" class="space-y-2.5 hidden">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- TAB 2: REVIEWS -->
+      <section id="tab-reviews" class="space-y-3.5 hidden">
+        <div class="flex items-center justify-between bg-white p-3 rounded-2xl border border-[#E8DFC9] shadow-xs">
+          <div>
+            <h2 class="text-sm font-bold text-gray-900 leading-tight">ক্লায়েন্ট ও ডক্টর রিভিউ</h2>
+            <p class="text-[11px] text-gray-500">নতুন রিভিউ যোগ করুন বা মুছে ফেলুন</p>
+          </div>
+          <button onclick="openReviewModal()" class="px-3 py-1.5 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] hover:brightness-105 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1">
+            + নতুন রিভিউ
+          </button>
+        </div>
+
+        <div id="reviews-loading" class="text-center py-10 text-gray-500 text-xs">
+          রিভিউ লোড হচ্ছে...
+        </div>
+
+        <div id="reviews-empty" class="text-center py-12 bg-white rounded-2xl border border-dashed border-[#D4AF37] p-5 hidden">
+          <div class="text-3xl mb-2">⭐</div>
+          <p class="text-xs font-bold text-gray-800">কোনো রিভিউ এখনো নেই</p>
+          <p class="text-[11px] text-gray-500 mt-1">ওপরের '+ নতুন রিভিউ' বাটনে ক্লিক করে প্রথম রিভিউ যোগ করুন</p>
+        </div>
+
+        <div id="reviews-list" class="space-y-2.5 hidden">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- TAB 3: SETTINGS -->
+      <section id="tab-settings" class="space-y-3.5 hidden">
+        <div class="bg-white p-4 rounded-2xl border border-[#E8DFC9] shadow-xs space-y-3">
+          <h2 class="text-sm font-bold text-gray-900 border-b pb-2">সাইট সেটিংস ও যোগাযোগ</h2>
+          
+          <div>
+            <label class="block text-[11px] font-bold text-gray-700 mb-1">ফোন নম্বর</label>
+            <input type="text" id="setting-phone" class="w-full text-xs p-2.5 border rounded-xl bg-gray-50 focus:bg-white focus:border-[#D4AF37] outline-none">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-gray-700 mb-1">হোয়াটসঅ্যাপ নম্বর</label>
+            <input type="text" id="setting-whatsapp" class="w-full text-xs p-2.5 border rounded-xl bg-gray-50 focus:bg-white focus:border-[#D4AF37] outline-none">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-gray-700 mb-1">অফিসিয়াল ইমেইল</label>
+            <input type="text" id="setting-email" class="w-full text-xs p-2.5 border rounded-xl bg-gray-50 focus:bg-white focus:border-[#D4AF37] outline-none">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-gray-700 mb-1">প্রধান অফিস ঠিকানা</label>
+            <input type="text" id="setting-address" class="w-full text-xs p-2.5 border rounded-xl bg-gray-50 focus:bg-white focus:border-[#D4AF37] outline-none">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-gray-700 mb-1">ফেসবুক পেজ লিংক</label>
+            <input type="text" id="setting-facebook" class="w-full text-xs p-2.5 border rounded-xl bg-gray-50 focus:bg-white focus:border-[#D4AF37] outline-none">
+          </div>
+
+          <div class="pt-2 border-t border-dashed border-gray-200">
+            <label class="block text-[11px] font-bold text-gray-700 mb-1">Google Analytics 4 ID (ঐচ্ছিক)</label>
+            <input type="text" id="setting-ga-id" placeholder="G-XXXXXXXXXX" class="w-full text-xs p-2.5 border rounded-xl bg-gray-50 focus:bg-white focus:border-[#D4AF37] outline-none font-mono">
+            <p class="text-[10px] text-gray-500 mt-1 leading-relaxed">
+              আপনার গুগল অ্যানালিটিক্স অ্যাকাউন্ট থেকে পাওয়া G- দিয়ে শুরু হওয়া Measurement ID এখানে বসিয়ে সেভ করলে ওয়েবসাইটে অটোমেটিক ভিজিটর হিসাব শুরু হবে (ফায়ারবেসের কোনো লিমিট খরচ হবে না)।
+            </p>
+          </div>
+
+          <button onclick="saveSiteSettings()" class="w-full py-2.5 mt-2 bg-gradient-to-r from-[#8A5A00] to-[#B8860B] text-white rounded-xl text-xs font-bold shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5">
+            💾 সেটিংস সংরক্ষণ করুন
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Toast Alert -->
+    <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-2.5 rounded-2xl shadow-2xl text-xs font-semibold z-50 transition-all duration-300 opacity-0 pointer-events-none transform translate-y-3 flex items-center gap-2 border border-[#D4AF37]/50">
+      <span id="toast-icon">✅</span>
+      <span id="toast-msg">সফলভাবে সম্পন্ন হয়েছে!</span>
+    </div>
+
+  </div>
+
+  <!-- MODAL: Edit/Add Team Member -->
+  <div id="modal-member" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-4.5 shadow-2xl space-y-3 animate-in fade-in zoom-in duration-150 border-2 border-[#D4AF37]">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h3 id="modal-member-title" class="text-sm font-bold text-gray-900">টিম মেম্বার এডিট</h3>
+        <button onclick="closeMemberModal()" class="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center text-xs">✕</button>
+      </div>
+
+      <input type="hidden" id="member-id">
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">নাম</label>
+        <input type="text" id="member-name" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">পদবী / রোল</label>
+        <input type="text" id="member-role" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">ডিপার্টমেন্ট / ক্ষেত্র</label>
+        <input type="text" id="member-dept" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]">
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="block text-[11px] font-bold text-gray-700">ছবি (ছবির লিংক বা ফাইল আপলোড)</label>
+        <input type="text" id="member-image-url" placeholder="https://... ছবির অনলাইন লিংক" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]">
+        <div class="flex items-center gap-2">
+          <label class="flex-1 py-1.5 px-3 bg-[#FAF4E6] border border-[#D4AF37] rounded-xl text-[11px] font-semibold text-[#8A5A00] text-center cursor-pointer hover:bg-[#F3E7CC]">
+            📁 ডিভাইস থেকে ছবি সিলেক্ট করুন
+            <input type="file" accept="image/*" onchange="handleImageUpload(event, 'member-image-url', 'member-preview')" class="hidden">
+          </label>
+          <div id="member-preview" class="w-9 h-9 rounded-lg bg-gray-100 border overflow-hidden flex items-center justify-center text-[10px] text-gray-400">
+            ছবি
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">প্রদর্শনের ক্রম (Order: ১, ২, ৩...)</label>
+        <input type="number" id="member-order" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]" value="1">
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeMemberModal()" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold">বাতিল</button>
+        <button onclick="saveMember()" class="flex-1 py-2 bg-gradient-to-r from-[#8A5A00] to-[#B8860B] text-white rounded-xl text-xs font-bold shadow-sm">সংরক্ষণ করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit/Add Review -->
+  <div id="modal-review" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-4.5 shadow-2xl space-y-3 animate-in fade-in zoom-in duration-150 border-2 border-[#D4AF37]">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h3 id="modal-review-title" class="text-sm font-bold text-gray-900">রিভিউ যোগ / এডিট</h3>
+        <button onclick="closeReviewModal()" class="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center text-xs">✕</button>
+      </div>
+
+      <input type="hidden" id="review-id">
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">ডক্টর / ক্লায়েন্টের নাম</label>
+        <input type="text" id="review-name" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]" placeholder="যেমন: ডা. ফারহানা আক্তার">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">পদবী</label>
+        <input type="text" id="review-role" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]" placeholder="যেমন: কনসালট্যান্ট গাইনোকোলজিস্ট">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">হাসপাতাল / প্রতিষ্ঠান</label>
+        <input type="text" id="review-org" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]" placeholder="যেমন: সিটি মেডিকেল কলেজ হাসপাতাল">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">রেটিং (স্টার)</label>
+        <select id="review-rating" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37] bg-white">
+          <option value="5">⭐⭐⭐⭐⭐ (৫ স্টার)</option>
+          <option value="4">⭐⭐⭐⭐ (৪ স্টার)</option>
+          <option value="3">⭐⭐⭐ (৩ স্টার)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-700 mb-1">রিভিউ বক্তব্য (বাংলা)</label>
+        <textarea id="review-text" rows="3" class="w-full text-xs p-2 border rounded-xl outline-none focus:border-[#D4AF37]" placeholder="প্রচার মিডিয়া সম্পর্কে তাদের মূল্যবান মতামত..."></textarea>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeReviewModal()" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold">বাতিল</button>
+        <button onclick="saveReview()" class="flex-1 py-2 bg-gradient-to-r from-[#8A5A00] to-[#B8860B] text-white rounded-xl text-xs font-bold shadow-sm">পাবলিশ করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Firebase Config Connected to User's prochar-media-e8676 Project
+    const firebaseConfig = {
+      apiKey: "AIzaSyCsjQ1_iZ44y5P3LZwmcQ3klSUvUXT6TnE",
+      authDomain: "prochar-media-e8676.firebaseapp.com",
+      projectId: "prochar-media-e8676",
+      storageBucket: "prochar-media-e8676.firebasestorage.app",
+      messagingSenderId: "425962575212",
+      appId: "1:425962575212:web:7f5f0a80f2a0fd81d20f49"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let teamCache = [];
+    let reviewsCache = [];
+
+    // 2. Tab Navigation
+    function switchTab(tab) {
+      ['team', 'reviews', 'settings'].forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const sec = document.getElementById(`tab-${t}`);
+        if (t === tab) {
+          btn.className = "py-2 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-[#8A5A00] text-white shadow-xs whitespace-nowrap";
+          sec.classList.remove('hidden');
+        } else {
+          btn.className = "py-2 px-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gray-100 text-gray-600 hover:bg-gray-200 whitespace-nowrap";
+          sec.classList.add('hidden');
+        }
+      });
+    }
+
+    // 3. Realtime Team Members Listener
+    db.collection('team_members').orderBy('order', 'asc').onSnapshot(snap => {
+      document.getElementById('team-loading').classList.add('hidden');
+      const list = document.getElementById('team-list');
+      list.classList.remove('hidden');
+      list.innerHTML = '';
+      teamCache = [];
+
+      snap.forEach(doc => {
+        const data = doc.data();
+        data.id = doc.id;
+        teamCache.push(data);
+
+        const card = document.createElement('div');
+        card.className = "p-3 bg-white rounded-2xl border border-[#E8DFC9] shadow-xs flex items-center gap-3";
+        
+        const hasPhoto = data.image && (data.image.startsWith('http') || data.image.startsWith('data:'));
+        const photoHtml = hasPhoto 
+          ? `<img src="${data.image}" class="w-12 h-12 rounded-xl object-cover border border-[#D4AF37]/50 shadow-2xs">`
+          : `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FAF4E6] to-[#F1E5C8] border border-[#D4AF37]/60 flex items-center justify-center text-base font-black text-[#8A5A00]">${data.name ? data.name.charAt(0) : 'P'}</div>`;
+
+        card.innerHTML = `
+          ${photoHtml}
+          <div class="flex-1 min-w-0">
+            <h4 class="text-xs font-bold text-gray-900 truncate">${data.name || 'নাম নেই'}</h4>
+            <p class="text-[11px] text-[#8A5A00] font-semibold truncate leading-tight">${data.role || ''}</p>
+            <p class="text-[10px] text-gray-500 truncate leading-tight">${data.department || ''}</p>
+          </div>
+          <div class="flex flex-col gap-1.5 shrink-0">
+            <button onclick="editMember('${data.id}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-[#8A5A00] border border-[#D4AF37]/40 rounded-lg text-[10px] font-bold">
+              ✏️ এডিট
+            </button>
+            <button onclick="deleteMember('${data.id}')" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-[10px] font-bold">
+              🗑️ মুছুন
+            </button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }, err => {
+      console.warn(err);
+    });
+
+    // 4. Realtime Reviews Listener
+    db.collection('reviews').onSnapshot(snap => {
+      document.getElementById('reviews-loading').classList.add('hidden');
+      const list = document.getElementById('reviews-list');
+      const emptyState = document.getElementById('reviews-empty');
+      list.innerHTML = '';
+      reviewsCache = [];
+
+      if (snap.empty) {
+        list.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      list.classList.remove('hidden');
+
+      snap.forEach(doc => {
+        const data = doc.data();
+        data.id = doc.id;
+        reviewsCache.push(data);
+
+        const card = document.createElement('div');
+        card.className = "p-3 bg-white rounded-2xl border border-[#E8DFC9] shadow-xs space-y-2";
+        
+        const stars = '⭐'.repeat(data.rating || 5);
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-gray-900">${data.name || ''}</span>
+              <span class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">লাইভ</span>
+            </div>
+            <div class="text-[11px]">${stars}</div>
+          </div>
+          <p class="text-[11px] text-gray-600 leading-relaxed font-normal">"${data.textBn || data.textEn || ''}"</p>
+          <div class="flex items-center justify-between pt-1 border-t text-[10px] text-gray-400">
+            <span>${data.role || ''} • ${data.organization || ''}</span>
+            <div class="flex gap-2">
+              <button onclick="editReview('${data.id}')" class="text-[#8A5A00] font-bold">✏️ এডিট</button>
+              <button onclick="deleteReview('${data.id}')" class="text-red-500 font-bold">🗑️ মুছুন</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    });
+
+    // 5. Realtime Site Settings Listener
+    db.collection('site_settings').doc('main').onSnapshot(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (data.phone) document.getElementById('setting-phone').value = data.phone;
+        if (data.whatsapp) document.getElementById('setting-whatsapp').value = data.whatsapp;
+        if (data.email) document.getElementById('setting-email').value = data.email;
+        if (data.address) document.getElementById('setting-address').value = data.address;
+        if (data.facebookUrl) document.getElementById('setting-facebook').value = data.facebookUrl;
+        if (data.gaMeasurementId !== undefined) document.getElementById('setting-ga-id').value = data.gaMeasurementId || '';
+      }
+    });
+
+    // 6. Member Modal Logic
+    function openMemberModal() {
+      document.getElementById('modal-member-title').innerText = "নতুন টিম মেম্বার যোগ করুন";
+      document.getElementById('member-id').value = "";
+      document.getElementById('member-name').value = "";
+      document.getElementById('member-role').value = "";
+      document.getElementById('member-dept').value = "";
+      document.getElementById('member-image-url').value = "";
+      document.getElementById('member-order').value = teamCache.length + 1;
+      document.getElementById('member-preview').innerHTML = "ছবি";
+      document.getElementById('modal-member').classList.remove('hidden');
+    }
+
+    function editMember(id) {
+      const member = teamCache.find(m => m.id === id);
+      if (!member) return;
+      document.getElementById('modal-member-title').innerText = "টিম মেম্বার এডিট করুন";
+      document.getElementById('member-id').value = member.id;
+      document.getElementById('member-name').value = member.name || "";
+      document.getElementById('member-role').value = member.role || "";
+      document.getElementById('member-dept').value = member.department || "";
+      document.getElementById('member-image-url').value = member.image || "";
+      document.getElementById('member-order').value = member.order || 1;
+      if (member.image) {
+        document.getElementById('member-preview').innerHTML = `<img src="${member.image}" class="w-full h-full object-cover">`;
+      } else {
+        document.getElementById('member-preview').innerHTML = "ছবি";
+      }
+      document.getElementById('modal-member').classList.remove('hidden');
+    }
+
+    function closeMemberModal() {
+      document.getElementById('modal-member').classList.add('hidden');
+    }
+
+    async function saveMember() {
+      const id = document.getElementById('member-id').value || ('team-' + Date.now());
+      const data = {
+        name: document.getElementById('member-name').value.trim(),
+        role: document.getElementById('member-role').value.trim(),
+        department: document.getElementById('member-dept').value.trim(),
+        image: document.getElementById('member-image-url').value.trim(),
+        order: parseInt(document.getElementById('member-order').value) || 1,
+        company: 'Prochar Media'
+      };
+
+      if (!data.name) {
+        showToast('⚠️ মেম্বারের নাম আবশ্যক!');
+        return;
+      }
+
+      await db.collection('team_members').doc(id).set(data, { merge: true });
+      closeMemberModal();
+      showToast('✅ মেম্বার সফলভাবে সংরক্ষিত হয়েছে!');
+    }
+
+    async function deleteMember(id) {
+      if (!confirm('সত্যিই কি এই টিম মেম্বারকে ডিলিট করতে চান?')) return;
+      await db.collection('team_members').doc(id).delete();
+      showToast('🗑️ টিম মেম্বার মুছে ফেলা হয়েছে!');
+    }
+
+    // 7. Review Modal Logic
+    function openReviewModal() {
+      document.getElementById('modal-review-title').innerText = "নতুন রিভিউ যোগ করুন";
+      document.getElementById('review-id').value = "";
+      document.getElementById('review-name').value = "";
+      document.getElementById('review-role').value = "";
+      document.getElementById('review-org').value = "";
+      document.getElementById('review-rating').value = "5";
+      document.getElementById('review-text').value = "";
+      document.getElementById('modal-review').classList.remove('hidden');
+    }
+
+    function editReview(id) {
+      const rev = reviewsCache.find(r => r.id === id);
+      if (!rev) return;
+      document.getElementById('modal-review-title').innerText = "রিভিউ এডিট করুন";
+      document.getElementById('review-id').value = rev.id;
+      document.getElementById('review-name').value = rev.name || "";
+      document.getElementById('review-role').value = rev.role || "";
+      document.getElementById('review-org').value = rev.organization || "";
+      document.getElementById('review-rating').value = String(rev.rating || 5);
+      document.getElementById('review-text').value = rev.textBn || rev.textEn || "";
+      document.getElementById('modal-review').classList.remove('hidden');
+    }
+
+    function closeReviewModal() {
+      document.getElementById('modal-review').classList.add('hidden');
+    }
+
+    async function saveReview() {
+      const id = document.getElementById('review-id').value || ('rev-' + Date.now());
+      const data = {
+        name: document.getElementById('review-name').value.trim(),
+        role: document.getElementById('review-role').value.trim() || 'Client / Doctor',
+        organization: document.getElementById('review-org').value.trim() || '',
+        rating: parseInt(document.getElementById('review-rating').value) || 5,
+        textBn: document.getElementById('review-text').value.trim(),
+        textEn: document.getElementById('review-text').value.trim(),
+        status: 'approved',
+        createdAt: new Date().toISOString()
+      };
+
+      if (!data.name || !data.textBn) {
+        showToast('⚠️ নাম এবং রিভিউ বক্তব্য আবশ্যক!');
+        return;
+      }
+
+      await db.collection('reviews').doc(id).set(data, { merge: true });
+      closeReviewModal();
+      showToast('✅ রিভিউ সফলভাবে ওয়েবসাইটে লাইভ হয়েছে!');
+    }
+
+    async function deleteReview(id) {
+      if (!confirm('সত্যিই কি এই রিভিউটি মুছে ফেলতে চান?')) return;
+      await db.collection('reviews').doc(id).delete();
+      showToast('🗑️ রিভিউ মুছে ফেলা হয়েছে!');
+    }
+
+    // 8. Site Settings Save
+    async function saveSiteSettings() {
+      const data = {
+        phone: document.getElementById('setting-phone').value.trim(),
+        whatsapp: document.getElementById('setting-whatsapp').value.trim(),
+        email: document.getElementById('setting-email').value.trim(),
+        address: document.getElementById('setting-address').value.trim(),
+        facebookUrl: document.getElementById('setting-facebook').value.trim(),
+        gaMeasurementId: document.getElementById('setting-ga-id').value.trim(),
+        updatedAt: new Date().toISOString()
+      };
+      await db.collection('site_settings').doc('main').set(data, { merge: true });
+      showToast('💾 সাইট সেটিংস সফলভাবে সংরক্ষিত হয়েছে!');
+    }
+
+    // Image Upload to Base64 (Allows user to select photos from phone or computer without external hosting)
+    function handleImageUpload(e, targetInputId, previewElemId) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 800000) {
+        showToast('⚠️ ছবির সাইজ ৮০০KB এর কম রাখুন');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        document.getElementById(targetInputId).value = reader.result;
+        document.getElementById(previewElemId).innerHTML = `<img src="${reader.result}" class="w-full h-full object-cover">`;
+        showToast('📸 ছবি সিলেক্ট করা হয়েছে!');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Toast Notification
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

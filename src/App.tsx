@@ -21,13 +21,25 @@ import {
   TermsOfServicePage,
   DisclaimerPage,
 } from './components/InfoPages';
+import { initGoogleAnalytics, trackGaPageView } from './utils/visitorTracker';
+import { Analytics } from '@vercel/analytics/react';
 
 function MainRouter() {
-  const { lang, setLang } = useApp();
+  const { lang, setLang, siteSettings } = useApp();
 
   const [currentPath, setCurrentPath] = useState<string>(() => {
     return window.location.pathname || '/';
   });
+
+  useEffect(() => {
+    if (siteSettings?.gaMeasurementId) {
+      initGoogleAnalytics(siteSettings.gaMeasurementId);
+    }
+  }, [siteSettings?.gaMeasurementId]);
+
+  useEffect(() => {
+    trackGaPageView(currentPath);
+  }, [currentPath]);
 
   const handleSwitchLang = (newLang: 'en' | 'bn') => {
     if (newLang === lang) return;
@@ -119,6 +131,7 @@ export default function App() {
   return (
     <AppProvider>
       <MainRouter />
+      <Analytics />
     </AppProvider>
   );
 }
