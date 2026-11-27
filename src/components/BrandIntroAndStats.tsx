@@ -1,8 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { Sparkles, Target, Zap, ShieldCheck, Award } from 'lucide-react';
+import { PortfolioTriggerSection } from './PortfolioTriggerSection';
 
-export const BrandIntroAndStats: React.FC = () => {
+interface BrandIntroAndStatsProps {
+  onNavigatePortfolio: () => void;
+}
+
+export const BrandIntroAndStats: React.FC<BrandIntroAndStatsProps> = ({ onNavigatePortfolio }) => {
   const { lang, siteSettings } = useApp();
   const [hasAnimated, setHasAnimated] = useState(false);
   const statsRef = useRef<HTMLDivElement | null>(null);
@@ -156,6 +161,9 @@ export const BrandIntroAndStats: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* 2.5 Portfolio Trigger Section with 3-page stacked effect */}
+      <PortfolioTriggerSection onNavigatePortfolio={onNavigatePortfolio} />
 
       {/* 3. About Prochar Media Section */}
       <section id="about" className="py-14 sm:py-20 md:py-24 bg-[#FCFAF7] relative border-t border-[#D4AF37]/20">

@@ -217,7 +217,7 @@ export const PortfolioAndVideoSection: React.FC = () => {
                 <div className="mt-5 pt-4 border-t border-[#D4AF37]/30 flex flex-wrap items-center justify-between gap-3">
                   <a
                     href={`https://wa.me/88${siteSettings.whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20Prochar%20Media,%20I%20am%20interested%20in%20a%20similar%20project%20like%20${encodeURIComponent(
-                      selectedProject.titleEn
+                      selectedProject.titleEn || 'Prochar Media Project'
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"

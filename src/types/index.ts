@@ -71,11 +71,13 @@ export interface ServiceItem {
 
 export interface PortfolioItem {
   id: string;
-  titleEn: string;
-  titleBn: string;
-  category: 'All' | 'Healthcare' | 'Branding' | 'Digital Marketing' | 'Web Development' | 'Creative';
-  descEn: string;
-  descBn: string;
+  titleEn?: string;
+  titleBn?: string;
+  category: string;
+  descEn?: string;
+  descBn?: string;
   imageUrl: string;
+  caption?: string;
   client?: string;
+  videoUrl?: string;
 }

@@ -14,6 +14,7 @@ import { TeamSection } from './components/TeamSection';
 import { FaqAndContactSection } from './components/FaqAndContactSection';
 import { Footer, FloatingWidgets } from './components/Footer';
 import { AllReviewsPage } from './components/ReviewModalAndPage';
+import { AllPortfolioPage } from './components/PortfolioDedicatedPage';
 import {
   AboutUsPage,
   ContactUsPage,
@@ -68,6 +69,11 @@ function MainRouter() {
     return <AllReviewsPage onBackToHome={() => navigateTo('/')} />;
   }
 
+  // 1.5. All Portfolio Dedicated Page
+  if (currentPath === '/portfolio' || currentPath === '/portfolio/') {
+    return <AllPortfolioPage onBackToHome={() => navigateTo('/')} />;
+  }
+
   // 2. About Us Dedicated Page
   if (currentPath === '/about-us' || currentPath === '/about-us/') {
     return <AboutUsPage onBackToHome={() => navigateTo('/')} />;
@@ -106,7 +112,7 @@ function MainRouter() {
       {/* Main content */}
       <main key={lang} className="lang-transition-container">
         <Hero />
-        <BrandIntroAndStats />
+        <BrandIntroAndStats onNavigatePortfolio={() => navigateTo('/portfolio')} />
         <ServicesSection />
         <HealthcareSection />
         <BridgeSection />
